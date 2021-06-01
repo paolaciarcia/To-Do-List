@@ -10,21 +10,27 @@ import CoreData
 
 class ToDoListViewController: UITableViewController {
     
+    //MARK: - IBOutlet
     @IBOutlet weak var addNewItem: UIBarButtonItem!
+    @IBOutlet weak var searchItems: UISearchBar!
     
+    //MARK: - Properties
     var itemArray = [Item]()
 
     //1 - persistir dados
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchItems.delegate = self
         
         //4 - persistir dados
         print("open this file\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
         loadItems()
     }
     
+    //MARK: - IBActions
     @IBAction func addButton(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         var tf = UITextField()
@@ -33,7 +39,6 @@ class ToDoListViewController: UITableViewController {
             textField.placeholder = "Create new item"
             
             tf = textField
-        
         }
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
@@ -54,6 +59,7 @@ class ToDoListViewController: UITableViewController {
             self.present(alert, animated: true, completion: nil)
     }
     
+    //MARK: - Methods
     func saveItems() {
         
         //3 - persistir dados
@@ -65,14 +71,14 @@ class ToDoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         //5 - persistir dados
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("Error fetching data from \(error)")
         }
+        tableView.reloadData()
     }
     
     //MARK: - TableViewDataSource
@@ -105,6 +111,21 @@ class ToDoListViewController: UITableViewController {
         saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
+        
+    }
+}
+
+//MARK: - UISearchBarDelegate
+extension ToDoListViewController: UISearchBarDelegate {
+    //pesquisar items na tableView com UISearchBar
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        
+        guard searchBar.text != nil else { return }
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems()
         
     }
 }
