@@ -6,19 +6,22 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
     
     @IBOutlet weak var addNewItem: UIBarButtonItem!
     
     var itemArray = [Item]()
-    
+
     //1 - persistir dados
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("items.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //4 - persistir dados
+        print("open this file\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
         loadItems()
     }
     
@@ -34,11 +37,11 @@ class ToDoListViewController: UITableViewController {
         }
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            print("success")
-            print(tf.text!)
             
-            var newItem = Item()
+            //2 - persistir dados | iniciar configurando o AppDelegate e incluindo o DataModel.xcdatamodeld
+            let newItem = Item(context: self.context)
             newItem.title = tf.text!
+            newItem.done = false
             
             if tf.text != "" {
                 self.itemArray.append(newItem)
@@ -52,33 +55,25 @@ class ToDoListViewController: UITableViewController {
     }
     
     func saveItems() {
-        //2 - persistir dados
-        let encoder = PropertyListEncoder()
         
         //3 - persistir dados
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("Error enconding item array, \(error)")
+            print("Error saving context \(error)")
         }
         self.tableView.reloadData()
     }
     
     func loadItems() {
-        //4 - persistir dados
-        //obs: colocar o objeto Item como Codable
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print(error)
-            }
+        //5 - persistir dados
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from \(error)")
         }
     }
-
-
     
     //MARK: - TableViewDataSource
     
@@ -100,6 +95,10 @@ class ToDoListViewController: UITableViewController {
     
     //MARK: - TableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        //remover a linha da tableview e do CoreData
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
