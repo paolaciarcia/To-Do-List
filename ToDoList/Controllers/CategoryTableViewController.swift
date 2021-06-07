@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import SwipeCellKit
 
 class CategoryTableViewController: UITableViewController {
     
@@ -24,7 +25,8 @@ class CategoryTableViewController: UITableViewController {
         searchItems.delegate = self
         
         loadCategories()
-
+        
+        tableView.rowHeight = 80.0
     }
     
     //MARK: - IBActions
@@ -81,11 +83,13 @@ class CategoryTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
         
         let item = categories[indexPath.row]
         
         cell.textLabel?.text = item.name
+        
+        cell.delegate = self
     
         return cell
     }
@@ -127,4 +131,34 @@ extension CategoryTableViewController: UISearchBarDelegate {
             }
         }
     }
+}
+
+// MARK: - SwipeTableViewCellDelegate
+extension CategoryTableViewController: SwipeTableViewCellDelegate {
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            // handle action by updating model with deletion
+            
+            self.context.delete(self.categories[indexPath.row])
+            self.categories.remove(at: indexPath.row)
+                
+                do {
+                    try self.context.save()
+                } catch {
+                    print("Error deleting category: \(error)")
+                }
+            
+                tableView.reloadData()
+            }
+
+            // customize the action appearance
+            deleteAction.image = UIImage(named: "delete-icon")
+
+            return [deleteAction]
+    }
+    
+    
 }
