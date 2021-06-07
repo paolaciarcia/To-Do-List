@@ -25,8 +25,6 @@ class CategoryTableViewController: SwipeTableViewController {
         searchItems.delegate = self
         
         loadCategories()
-        
-        tableView.rowHeight = 80.0
     }
     
     //MARK: - IBActions
@@ -55,7 +53,6 @@ class CategoryTableViewController: SwipeTableViewController {
     //MARK: - Methods
     
     func saveCategories() {
-        
         do {
             try context.save()
         } catch {

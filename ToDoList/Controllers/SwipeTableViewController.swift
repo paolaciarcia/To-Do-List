@@ -10,10 +10,10 @@ import SwipeCellKit
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
     
-    //var categories = [Category]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = 70.0
     }
     
     // MARK: - TableViewDataSource
