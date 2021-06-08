@@ -31,9 +31,25 @@ class ToDoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         searchItems.delegate = self
         tableView.separatorStyle = .none
-        
+    
         //4 - persistir dados
         print("open this file\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let colorHex = selectedCategory?.color {
+            let navBarAppearence = UINavigationBarAppearance()
+            let contrastColor = ContrastColorOf(UIColor(hexString: colorHex) ?? .cyan, returnFlat: true)
+            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist")}
+            title = selectedCategory!.name
+            navBarAppearence.largeTitleTextAttributes = [.foregroundColor: contrastColor]
+            navBarAppearence.backgroundColor = UIColor(hexString: colorHex)
+            navBar.standardAppearance = navBarAppearence
+            navBar.scrollEdgeAppearance = navBarAppearence
+            navBar.tintColor = contrastColor
+        }
     }
     
     //MARK: - IBActions

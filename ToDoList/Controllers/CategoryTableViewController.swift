@@ -28,6 +28,17 @@ class CategoryTableViewController: SwipeTableViewController {
         tableView.separatorStyle = .none
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist")}
+        let navBarAppearence = UINavigationBarAppearance()
+        navBarAppearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearence.backgroundColor = UIColor(hexString: "6E92D2")
+        navBar.standardAppearance = navBarAppearence
+        navBar.scrollEdgeAppearance = navBarAppearence
+    }
+    
     
     //MARK: - IBActions
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
