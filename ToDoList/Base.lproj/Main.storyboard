@@ -15,14 +15,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="Wu9-I4-5U6">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="70" id="cLG-MJ-lh9" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
-                                <rect key="frame" x="0.0" y="72" width="414" height="70"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cLG-MJ-lh9" id="EQe-Hc-fHC">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="70"/>
@@ -45,7 +40,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addItems" destination="SHq-Vr-yce" id="2GF-P0-06f"/>
-                        <outlet property="searchItems" destination="Wu9-I4-5U6" id="8F0-Mb-Sw2"/>
                         <segue destination="wMW-nf-X25" kind="show" identifier="goToItems" id="kFO-7w-4ea"/>
                     </connections>
                 </tableViewController>

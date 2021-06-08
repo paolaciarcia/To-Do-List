@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import ChameleonFramework
 
 class ToDoListViewController: SwipeTableViewController {
     
@@ -29,6 +30,7 @@ class ToDoListViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchItems.delegate = self
+        tableView.separatorStyle = .none
         
         //4 - persistir dados
         print("open this file\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
@@ -114,14 +116,19 @@ class ToDoListViewController: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.title
         
-        cell.accessoryType = item.done ? .checkmark : .none
-
+        let iP = CGFloat(indexPath.row)
+        let iA = CGFloat(itemArray.count)
+        if let color = UIColor(hexString: selectedCategory!.color!)?.darken(byPercentage: iP / iA) {
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color , returnFlat: true)
+            
+            cell.accessoryType = item.done ? .checkmark : .none
+        }
         return cell
     }
     

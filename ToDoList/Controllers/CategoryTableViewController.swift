@@ -24,7 +24,6 @@ class CategoryTableViewController: SwipeTableViewController {
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchItems.delegate = self
         loadCategories()
         tableView.separatorStyle = .none
     }
@@ -101,8 +100,10 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let item = categories[indexPath.row]
         cell.textLabel?.text = item.name
-
-        cell.backgroundColor = UIColor(hexString: categories[indexPath.row].color ?? "6E92D2")
+        
+        let color = UIColor(hexString: categories[indexPath.row].color ?? "6E92D2")
+        cell.textLabel?.textColor = ContrastColorOf(color ?? .black, returnFlat: true)
+        cell.backgroundColor = color
 
         return cell
     }
@@ -123,25 +124,4 @@ class CategoryTableViewController: SwipeTableViewController {
     }
 }
 
-extension CategoryTableViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let request: NSFetchRequest<Category> = Category.fetchRequest()
-        
-        guard searchBar.text != nil else { return }
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        
-        loadCategories(with: request)
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text?.count == 0 {
-            loadCategories()
-            
-            DispatchQueue.main.async {
-                searchBar.resignFirstResponder()
-            }
-        }
-    }
-}
 

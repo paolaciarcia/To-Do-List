@@ -7,7 +7,6 @@
 
 import UIKit
 import SwipeCellKit
-import ChameleonFramework
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
     
