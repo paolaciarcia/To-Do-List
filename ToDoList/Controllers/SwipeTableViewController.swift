@@ -7,9 +7,9 @@
 
 import UIKit
 import SwipeCellKit
+import ChameleonFramework
 
 class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegate {
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +20,12 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SwipeTableViewCell
-            
-                cell.delegate = self
-            
-                return cell
+        cell.layer.cornerRadius = 15
+        cell.layer.borderColor = CGColor(red: 255, green: 255, blue: 255, alpha: 1)
+        cell.layer.borderWidth = 5
+        cell.delegate = self
+  
+        return cell
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {

@@ -7,25 +7,28 @@
 
 import UIKit
 import CoreData
-//import SwipeCellKit
+import ChameleonFramework
 
 class CategoryTableViewController: SwipeTableViewController {
     
     //MARK: - IBOutlets
     @IBOutlet weak var addItems: UIBarButtonItem!
     @IBOutlet weak var searchItems: UISearchBar!
+
     
     //MARK: - Properties
     var categories = [Category]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
+
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         searchItems.delegate = self
-        
         loadCategories()
+        tableView.separatorStyle = .none
     }
+    
     
     //MARK: - IBActions
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -43,9 +46,13 @@ class CategoryTableViewController: SwipeTableViewController {
             let newCategory = Category(context: self.context)
             newCategory.name = tf.text!
             
+            let hexColor = UIColor.randomFlat().hexValue()
+            newCategory.color = hexColor
+            
             self.categories.append(newCategory)
             self.saveCategories()
         }
+        
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)
     }
@@ -85,18 +92,18 @@ class CategoryTableViewController: SwipeTableViewController {
     }
 
     // MARK: - TableViewDataSource
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let item = categories[indexPath.row]
-        
         cell.textLabel?.text = item.name
-            
+
+        cell.backgroundColor = UIColor(hexString: categories[indexPath.row].color ?? "6E92D2")
+
         return cell
     }
 
@@ -105,9 +112,8 @@ class CategoryTableViewController: SwipeTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "goToItems", sender: self)
         saveCategories()
-        
-        
     }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let itemsViewController = segue.destination as! ToDoListViewController
         
